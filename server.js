@@ -1,38 +1,24 @@
 const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
-
-const authRoutes = require('./src/routes/auth');
-const userRoutes = require('./src/routes/user');
-const consultRoutes = require('./src/routes/consultation');
-const goalsRoutes = require('./src/routes/goals');
+const cors = require('cors');
+require('events').EventEmitter.defaultMaxListeners = 20;
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 4000;
 
-app.use(
-  cors({
-    origin: '*', 
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
-);
-
+// Middleware
+app.use(cors());
 app.use(express.json());
 
+// Routes
+app.use('/api/auth', require('./src/routes/auth'));
+app.use('/api/consultations', require('./src/routes/consultation'));
+app.use('/api/goals', require('./src/routes/goals'));
+app.use('/api/users', require('./src/routes/user'));
 
-app.get('/', (req, res) => {
-  res.json({ status: '✅ Dietician API running successfully' });
-});
+// Root route
+app.get('/', (req, res) => res.send('✅ Backend is running!'));
 
-
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/consult', consultRoutes);
-app.use('/api/goals', goalsRoutes);
-
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
