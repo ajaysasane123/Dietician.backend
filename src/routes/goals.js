@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../db');
 const auth = require('../middleware/authMiddleware');
 
-// add goal
+
 router.post('/', auth, async (req,res) => {
   try{
     const { title, target_date, progress } = req.body;
@@ -12,7 +12,6 @@ router.post('/', auth, async (req,res) => {
   }catch(err){console.error(err); res.status(500).json({error:'Server error'})}
 });
 
-// list goals
 router.get('/', auth, async (req,res) => {
   try{
     const [rows] = await pool.query('SELECT id,title,target_date,progress,created_at FROM goals WHERE user_id=? ORDER BY created_at DESC',[req.user.id]);
@@ -20,7 +19,7 @@ router.get('/', auth, async (req,res) => {
   }catch(err){console.error(err); res.status(500).json({error:'Server error'})}
 });
 
-// update progress
+
 router.put('/:id/progress', auth, async (req,res) => {
   try{
     const { progress } = req.body;
